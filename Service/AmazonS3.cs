@@ -4,6 +4,7 @@ using Amazon.S3.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Compare_Files_Aws_Azure.Service
@@ -24,7 +25,8 @@ namespace Compare_Files_Aws_Azure.Service
                 ListObjectsV2Request request = new ListObjectsV2Request
                 {
                     BucketName = bucketName,
-                    MaxKeys = 1000
+                    MaxKeys = 1000,
+
                 };
                 ListObjectsV2Response response;
                 do
@@ -44,7 +46,7 @@ namespace Compare_Files_Aws_Azure.Service
                 Console.WriteLine("Exception: " + e.Message.ToString());
                 Console.ReadKey();
             }
-
+            Files.RemoveAll(x => x.EndsWith("/")); // remove folder in the list
             return Files;
         }
     }
