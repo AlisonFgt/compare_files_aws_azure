@@ -1,6 +1,7 @@
 ﻿using Compare_Files_Aws_Azure.Service;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Compare_Files_Aws_Azure
 {
@@ -8,9 +9,28 @@ namespace Compare_Files_Aws_Azure
     {
         static void Main(string[] args)
         {
+            // args "bucket-name" "container-name" "storageaccount-name" "storageaccount-key"
             Console.WriteLine("Start Compare files aws and azure!");
-            List<string> result = AmazonS3.ListingObjectsAsync("trial.tradeforce.com.br").Result;
-            Console.WriteLine(string.Join("\n", result));
+            List<string> aws = AmazonS3.ListObjectsAsync(args[0]).Result;
+            List<string> azure = AzureContainer.ListAsync(args[1], args[2], args[3]).Result;
+            Compare(aws, azure);
+        }
+
+        public static void Compare(List<string> awsList, List<string> azList)
+        {
+            var diff = awsList.Except(azList).Distinct().ToArray();
+            Console.WriteLine($"Missing on Azure: {diff.Count()}");
+            foreach (var item in diff)
+            {
+                Console.WriteLine($"Diff: {item}");
+            }
+
+            diff = azList.Except(awsList).Distinct().ToArray();
+            Console.WriteLine($"Missing on AWS: {diff.Count()}");
+            foreach (var item in diff)
+            {
+                Console.WriteLine($"Diff: {item}");
+            }
         }
     }
 }
