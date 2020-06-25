@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Compare_Files_Aws_Azure.Service
 {
-    class AzureContainer
+    public class AzureContainer
     {
         public static Task<List<string>> ListAsync(string containerName, string storageAccountName, string storageAccountKey)
         {
